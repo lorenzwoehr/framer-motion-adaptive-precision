@@ -168,14 +168,12 @@ export function Calendar() {
               {getLabelFromTimeSlots(hourIndex)}
             </span>
             <div
-              data-index={hourIndex * 4}
               data-time={timeSlot.hour}
               className="relative h-[15px] w-full border-t-2 border-neutral-200 dark:border-neutral-700 select-none z-0"
             ></div>
             {timeSlot.slots.map((slot, index) => (
               <div
                 key={index}
-                data-index={hourIndex * 4 + index + 1}
                 data-time={slot}
                 className="relative h-[15px] w-full select-none z-0"
               ></div>
