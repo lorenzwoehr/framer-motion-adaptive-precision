@@ -15,7 +15,6 @@ const timeSlots = [
 ];
 
 export function Calendar() {
-  const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const [nearestSlot, setNearestSlot] = useState({ top: 0 });
 
   const [dragging, setDragging] = useState(false);
@@ -31,6 +30,7 @@ export function Calendar() {
 
   const slotHeight = 15;
 
+  // Offset y position of mouse cursor / touch within calendar
   const getYPosition = (
     e: MouseEvent | TouchEvent | React.MouseEvent | React.TouchEvent
   ): number => {
@@ -50,11 +50,12 @@ export function Calendar() {
 
   const handleMouseDown = (e: React.MouseEvent | React.TouchEvent) => {
     const y = getYPosition(e);
-    const index = Math.floor(y / slotHeight);
+    const index = Math.floor(y / slotHeight); //
 
+    // Initialize event card
     if (!dragging) {
       setStartIndex(index);
-      setEndIndex(index);
+      setEndIndex(index); // Start and end initially the same
       setEventStyle({
         top: index * slotHeight,
         height: 0,
@@ -70,8 +71,8 @@ export function Calendar() {
     const calendarElement = document.getElementById("calendar");
     if (!calendarElement) return;
 
-    const y = getYPosition(e);
-    const index = Math.floor(y / slotHeight);
+    const y = getYPosition(e); // Offset y position of mouse cursor / touch within calendar
+    const index = Math.floor(y / slotHeight); //
 
     setNearestSlot({ top: index * slotHeight });
 
@@ -81,14 +82,14 @@ export function Calendar() {
       if (index < startIndex) {
         // Dragging upwards: set negative marginTop to simulate moving up
         setEventStyle({
-          top: startIndex * slotHeight, // Keep top fixed
+          top: startIndex * slotHeight,
           height: newHeight,
           transformY: -newHeight, // Use negative transfrom to simulate upward drag
         });
       } else {
         // Dragging downwards: reset marginTop to 0 and adjust height
         setEventStyle({
-          top: startIndex * slotHeight, // Keep top fixed
+          top: startIndex * slotHeight,
           height: newHeight,
           transformY: 0, // Reset transform
         });
@@ -106,6 +107,7 @@ export function Calendar() {
         }
 
         setSelectedTime(
+          // Get nice and readable string from indexes
           getTimeRangeFromIndexes(
             Math.min(index, startIndex),
             Math.max(index, endIndex)
@@ -115,17 +117,20 @@ export function Calendar() {
     }
   };
 
+  // Reset event style
   const handleMouseUp = () => {
     setEventStyle({ top: 0, height: 0, transformY: 0 });
     setDragging(false);
   };
 
   useEffect(() => {
+    // Add event listeners
     window.addEventListener("mousemove", handleMouseMove);
     window.addEventListener("mouseup", handleMouseUp);
     window.addEventListener("touchmove", handleMouseMove, { passive: false });
     window.addEventListener("touchend", handleMouseUp);
 
+    // Clear event listeners
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseup", handleMouseUp);
@@ -143,7 +148,7 @@ export function Calendar() {
     >
       <MotionConfig
         transition={{
-          type: "easeOut",
+          type: "easeOut", // Has to be anything else than spring to be in sync, sadly
           duration: 0.15,
         }}
       >
@@ -157,9 +162,9 @@ export function Calendar() {
         {dragging && (
           <CalendarEvent
             eventStyle={eventStyle}
-            selectedTime={selectedTime}
-            dragDirection={dragDirection}
-            slotsSpanned={Math.abs(startIndex - endIndex)} // Pass the number of slots spanned as a prop
+            selectedTime={selectedTime} // Selected time to be printed on event card
+            dragDirection={dragDirection} // Direction of dragging: up / down
+            slotsSpanned={Math.abs(startIndex - endIndex)} // Number of slots spanned as a prop
           />
         )}
       </MotionConfig>
@@ -179,7 +184,7 @@ export function Calendar() {
                 key={index}
                 data-index={hourIndex * 4 + index + 1}
                 data-time={slot}
-                className="relative h-[15px] w-full border-t border-gray-200 select-none z-0"
+                className="relative h-[15px] w-full select-none z-0"
               ></div>
             ))}
           </div>

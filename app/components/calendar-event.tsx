@@ -56,10 +56,10 @@ export const CalendarEvent: React.FC<CalendarEventProps> = ({
                 fontSize: "10px",
                 paddingTop: 0,
                 paddingBottom: 0,
-              }} // Initial font size for smaller events
+              }}
               animate={{
                 opacity: 1,
-                fontSize, // Dynamically animate the font size
+                fontSize,
                 paddingTop: padding.paddingTop,
                 paddingBottom: padding.paddingBottom,
               }}
@@ -67,6 +67,7 @@ export const CalendarEvent: React.FC<CalendarEventProps> = ({
             >
               {selectedTime}
               <motion.span
+                key="event-name-long"
                 className="font-semibold block"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -84,17 +85,25 @@ export const CalendarEvent: React.FC<CalendarEventProps> = ({
                 padding: 0,
                 paddingTop: 0,
                 paddingBottom: 0,
-              }} // Initial font size for smaller events
+              }}
               animate={{
                 opacity: 1,
-                fontSize, // Dynamically animate the font size
+                fontSize,
                 paddingTop: padding.paddingTop,
                 paddingBottom: padding.paddingBottom,
               }}
               exit={{ opacity: 0 }}
             >
               {selectedTime}
-              <motion.span className="font-semibold">, Event name</motion.span>
+              <motion.span
+                key="event-name-short"
+                className="font-semibold"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
+                , Event name
+              </motion.span>
             </motion.p>
           )}
         </AnimatePresence>
