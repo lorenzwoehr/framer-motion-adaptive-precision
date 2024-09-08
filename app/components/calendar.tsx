@@ -12,14 +12,34 @@ const timeSlots = [
   { hour: "5 PM", slots: [] },
 ];
 
+// Helper to format time from index position
+const getTimeFromIndex = (index: number) => {
+  const hours = 1 + Math.floor(index / 4); // Start at 1 PM
+  const minutes = (index % 4) * 15;
+  const isPM = hours >= 12;
+  const displayHours = hours > 12 ? hours - 12 : hours;
+  const formattedMinutes =
+    minutes === 0 ? "" : `:${minutes.toString().padStart(2, "0")}`;
+  return `${displayHours}${formattedMinutes} ${isPM ? "PM" : "AM"}`;
+};
+
+// Helper to get time range from start and end index
+const getTimeRangeFromIndexes = (startIdx: number, endIdx: number) => {
+  const startTime = getTimeFromIndex(startIdx);
+  const endTime = getTimeFromIndex(endIdx);
+  return `${startTime} - ${endTime}`;
+};
+
 export function Calendar() {
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
-  const [nearestSlot, setNearestSlot] = useState({ left: 0, top: 0 });
+  const [nearestSlot, setNearestSlot] = useState({ top: 0 });
 
   // drag to create event
   const [dragging, setDragging] = useState(false);
-  const [startY, setStartY] = useState(0); // Track where the drag started
-  const [eventCard, setEventCard] = useState({ top: 0, height: 0 }); // Style for the dynamically added element
+  const [startIndex, setStartIndex] = useState(0); // Index where drag started
+  const [endIndex, setEndIndex] = useState(0); // Index where drag ends
+  const [eventStyle, setEventStyle] = useState({ top: 0, height: 0 });
+  const [selectedTime, setSelectedTime] = useState(""); // Store the selected time range
 
   // to do: get timeslot height dynamically
   // const [bounds, ref] = useMeasure();
@@ -34,16 +54,14 @@ export function Calendar() {
 
     const rect = calendarElement.getBoundingClientRect();
     const y = e.clientY - rect.top;
-    const snapY = Math.round(y / slotHeight) * slotHeight;
 
-    // Initialize the new element's position and height
-    if (!dragging) {
-      console.log("Start dragging Y: " + snapY);
-      setEventCard({ top: snapY, height: 0 });
-    }
+    const index = Math.floor(y / slotHeight);
 
-    setStartY(snapY); // Store the starting Y position
-    setDragging(true); // Set dragging state to true
+    setStartIndex(index);
+    setEndIndex(index); // Initially, endIndex is the same as startIndex
+    setEventStyle({ top: index * slotHeight, height: 0 });
+    setNearestSlot({ top: index * slotHeight });
+    setDragging(true);
   };
 
   // handle mouse move
@@ -57,35 +75,31 @@ export function Calendar() {
 
     setCursorPosition({ x, y });
 
-    const snapY = Math.round(y / slotHeight) * slotHeight;
+    const index = Math.floor(y / slotHeight);
 
-    // Set the nearest slot position
-    setNearestSlot({
-      left: 0, // This is the fixed position from the original code
-      top: snapY,
-    });
+    // Update the snapping cursor
+    setNearestSlot({ top: index * slotHeight });
 
     if (dragging) {
-      const deltaY = snapY - startY; // Calculate the distance dragged
+      const newHeight = Math.abs(index - startIndex) * slotHeight;
+      const newTop = Math.min(index, startIndex) * slotHeight;
 
-      // If dragging upwards, adjust the top position and reduce the height
-      if (deltaY < 0) {
-        setEventCard({ top: startY + deltaY, height: Math.abs(deltaY) });
-      } else {
-        // If dragging downwards, increase the height without changing the top
-        setEventCard({ top: startY, height: deltaY });
-      }
+      setStartIndex(index);
+      setEndIndex(index); // Update endIndex
+      setEventStyle({ top: newTop, height: newHeight });
+      setSelectedTime(
+        getTimeRangeFromIndexes(
+          Math.min(index, startIndex),
+          Math.max(index, endIndex)
+        )
+      );
     }
   };
 
   // Function to handle mouse up (end dragging)
   const handleMouseUp = () => {
     console.log("mouse up");
-
-    if (dragging) {
-      setDragging(false); // Stop dragging on mouse up
-      setEventCard({ top: 0, height: 0 }); // Reset the element
-    }
+    setDragging(false); // Stop dragging on mouse up
   };
 
   // Add event listeners for mousemove and mouseup
@@ -105,24 +119,26 @@ export function Calendar() {
       {/* Snapping cursor */}
       <motion.div
         className="w-full h-[2px] bg-gray-700 absolute z-10"
-        animate={{ left: nearestSlot.left, top: nearestSlot.top }}
-        transition={{ type: "spring", bounce: 0, duration: 0.25 }}
+        animate={{ top: nearestSlot.top }}
+        transition={{ type: "spring", bounce: 0, duration: 0.2 }}
       ></motion.div>
 
       {/* Dynamically added element that follows the cursor */}
       {dragging && (
         <motion.div
           className="absolute bg-gray-100 w-8 w-full"
-          style={{ top: `${eventCard.top}px` }}
-          initial={{ opacity: 0, top: `${eventCard.top}px` }}
+          style={{ top: `${eventStyle.top}px` }}
+          initial={{ opacity: 0, top: `${eventStyle.top}px` }}
           animate={{
             opacity: 1,
-            top: `${eventCard.top}px`,
-            height: `${eventCard.height}px`,
+            top: `${eventStyle.top}px`,
+            height: `${eventStyle.height}px`,
           }}
           exit={{ opacity: 0 }}
           transition={{ type: "spring", bounce: 0, duration: 0.25 }}
-        ></motion.div>
+        >
+          <p className="select-none">{selectedTime}</p>
+        </motion.div>
       )}
 
       {/* Main time slot sections */}
