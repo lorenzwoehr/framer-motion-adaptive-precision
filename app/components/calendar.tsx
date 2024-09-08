@@ -46,7 +46,9 @@ export function Calendar() {
   const slotHeight = 15;
 
   // Helper to get the correct Y position based on mouse or touch
-  const getYPosition = (e: React.MouseEvent | React.TouchEvent): number => {
+  const getYPosition = (
+    e: MouseEvent | TouchEvent | React.MouseEvent | React.TouchEvent
+  ): number => {
     const calendarElement = document.getElementById("calendar")!;
     const rect = calendarElement.getBoundingClientRect();
 
