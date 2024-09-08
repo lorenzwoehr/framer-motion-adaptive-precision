@@ -2,33 +2,16 @@
 
 import { AnimatePresence, MotionConfig, motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { getLabelFromTimeSlots, getTimeRangeFromIndexes } from "../utils";
 import useMeasure from "use-measure";
 
 const timeSlots = [
-  { hour: "1 PM", slots: ["1:15 PM", "1:30 PM", "1:45 PM"] },
-  { hour: "2 PM", slots: ["2:15 PM", "2:30 PM", "2:45 PM"] },
-  { hour: "3 PM", slots: ["3:15 PM", "3:30 PM", "3:45 PM"] },
-  { hour: "4 PM", slots: ["4:15 PM", "4:30 PM", "4:45 PM"] },
-  { hour: "5 PM", slots: [] },
+  { hour: "13:00", slots: ["13:15", "13:30", "13:45"] },
+  { hour: "14:00", slots: ["14:15", "14:30", "14:45"] },
+  { hour: "15:00", slots: ["15:15", "15:30", "15:45"] },
+  { hour: "16:00", slots: ["16:15", "16:30", "16:45"] },
+  { hour: "17:00", slots: [] },
 ];
-
-// Helper to format time from index position
-const getTimeFromIndex = (index: number) => {
-  const hours = 1 + Math.floor(index / 4); // Start at 1 PM
-  const minutes = (index % 4) * 15;
-  const isPM = hours >= 12;
-  const displayHours = hours > 12 ? hours - 12 : hours;
-  const formattedMinutes =
-    minutes === 0 ? "" : `:${minutes.toString().padStart(2, "0")}`;
-  return `${displayHours}${formattedMinutes} ${isPM ? "PM" : "AM"}`;
-};
-
-// Helper to get time range from start and end index
-const getTimeRangeFromIndexes = (startIdx: number, endIdx: number) => {
-  const startTime = getTimeFromIndex(startIdx);
-  const endTime = getTimeFromIndex(endIdx);
-  return `${startTime} - ${endTime}`;
-};
 
 export function Calendar() {
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
@@ -52,22 +35,22 @@ export function Calendar() {
     const calendarElement = document.getElementById("calendar")!;
     const rect = calendarElement.getBoundingClientRect();
 
+    let y = 0;
+
     if ("touches" in e && e.touches.length > 0) {
-      return e.touches[0].clientY - rect.top;
+      y = e.touches[0].clientY - rect.top;
     } else if ("clientY" in e) {
-      return e.clientY - rect.top;
+      y = e.clientY - rect.top;
     }
 
-    return 0;
+    // Constrain the Y position within the bounds of the calendar
+    return Math.min(Math.max(y, 0), rect.height);
   };
 
   // Function to handle mouse down (start dragging)
   const handleMouseDown = (e: React.MouseEvent | React.TouchEvent) => {
     console.log("mouse down");
-    // const calendarElement = document.getElementById("calendar");
-    // if (!calendarElement) return;
 
-    // const rect = calendarElement.getBoundingClientRect();
     const y = getYPosition(e);
     const index = Math.floor(y / slotHeight);
 
@@ -85,10 +68,6 @@ export function Calendar() {
 
     // const rect = calendarElement.getBoundingClientRect();
     const y = getYPosition(e);
-    // const x = e.clientX - rect.left;
-    // const y = e.clientY - rect.top;
-
-    // setCursorPosition({ x, y });
 
     const index = Math.floor(y / slotHeight);
 
@@ -133,16 +112,16 @@ export function Calendar() {
 
   return (
     <div
-      className="relative select-none"
+      className="relative group select-none"
       id="calendar"
       onMouseDown={handleMouseDown}
       onTouchStart={handleMouseDown}
     >
       {/* Snapping cursor */}
       <motion.div
-        className="w-full h-[2px] bg-gray-700 absolute z-10"
+        className="opacity-0 group-hover:opacity-100 w-full h-[2px] bg-gray-700 absolute z-10"
         animate={{ top: nearestSlot.top }}
-        transition={{ type: "spring", bounce: 0, duration: 0.2 }}
+        transition={{ type: "spring", bounce: 0, duration: 0.15 }}
       ></motion.div>
 
       {/* Dynamically added element that follows the cursor */}
@@ -157,7 +136,7 @@ export function Calendar() {
             height: `${eventStyle.height}px`,
           }}
           exit={{ opacity: 0 }}
-          transition={{ type: "spring", bounce: 0, duration: 0.25 }}
+          transition={{ type: "spring", bounce: 0, duration: 0.15 }}
         >
           <p className="select-none">{selectedTime}</p>
         </motion.div>
@@ -169,7 +148,7 @@ export function Calendar() {
           <div key={hourIndex} className="relative">
             {/* Display hour */}
             <span className="absolute top-[-12px] left-[-40px] text-gray-600 text-sm leading-7 font-normal text-xs select-none">
-              {timeSlot.hour}
+              {getLabelFromTimeSlots(hourIndex)}
             </span>
             {/* Main time block */}
             <div
