@@ -48,64 +48,45 @@ export const CalendarEvent: React.FC<CalendarEventProps> = ({
     >
       <div className="bg-[#0090FF] w-full h-full rounded-lg px-2 overflow-hidden">
         <AnimatePresence>
-          {slotsSpanned > 2 ? (
-            <motion.p
-              className={`select-none`}
-              initial={{
-                opacity: 0,
-                fontSize: "10px",
-                paddingTop: 0,
-                paddingBottom: 0,
-              }}
-              animate={{
-                opacity: 1,
-                fontSize,
-                paddingTop: padding.paddingTop,
-                paddingBottom: padding.paddingBottom,
-              }}
-              exit={{ opacity: 0 }}
-            >
-              {selectedTime}
+          <motion.p
+            className={`select-none`}
+            initial={{
+              opacity: 0,
+              fontSize: "10px",
+              paddingTop: 0,
+              paddingBottom: 0,
+            }}
+            animate={{
+              opacity: 1,
+              fontSize,
+              paddingTop: padding.paddingTop,
+              paddingBottom: padding.paddingBottom,
+            }}
+            exit={{ opacity: 0 }}
+          >
+            {selectedTime}
+            {slotsSpanned > 2 ? (
               <motion.span
                 key="event-name-long"
-                className="font-semibold block"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
+                className="font-semibold block"
               >
                 Event name
               </motion.span>
-            </motion.p>
-          ) : (
-            <motion.p
-              className={`select-none`}
-              initial={{
-                opacity: 0,
-                fontSize: "10px",
-                padding: 0,
-                paddingTop: 0,
-                paddingBottom: 0,
-              }}
-              animate={{
-                opacity: 1,
-                fontSize,
-                paddingTop: padding.paddingTop,
-                paddingBottom: padding.paddingBottom,
-              }}
-              exit={{ opacity: 0 }}
-            >
-              {selectedTime}
+            ) : (
               <motion.span
                 key="event-name-short"
-                className="font-semibold"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
+                className="font-semibold"
               >
                 , Event name
               </motion.span>
-            </motion.p>
-          )}
+            )}
+          </motion.p>
         </AnimatePresence>
       </div>
     </motion.div>
