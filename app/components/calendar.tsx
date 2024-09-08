@@ -101,17 +101,11 @@ export function Calendar() {
         // Determine drag direction
         if (index > startIndex) {
           setDragDirection("down");
+          setSelectedTime(getTimeRangeFromIndexes(startIndex, index));
         } else {
           setDragDirection("up");
+          setSelectedTime(getTimeRangeFromIndexes(index, startIndex));
         }
-
-        setSelectedTime(
-          // Get nice and readable string from indexes
-          getTimeRangeFromIndexes(
-            Math.min(index, startIndex),
-            Math.max(index, endIndex)
-          )
-        );
       }
     }
   };
