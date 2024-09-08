@@ -131,7 +131,7 @@ export function Calendar() {
 
   return (
     <div
-      className="relative"
+      className="relative select-none"
       id="calendar"
       onMouseDown={handleMouseDown}
       onTouchStart={handleMouseDown}
