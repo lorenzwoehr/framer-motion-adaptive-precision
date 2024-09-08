@@ -45,16 +45,28 @@ export function Calendar() {
   // const [bounds, ref] = useMeasure();
   const slotHeight = 15;
 
-  // Function to handle mouse down (start dragging)
-  const handleMouseDown = (e: React.MouseEvent) => {
-    console.log("mouse down");
-
-    const calendarElement = document.getElementById("calendar");
-    if (!calendarElement) return;
-
+  // Helper to get the correct Y position based on mouse or touch
+  const getYPosition = (e: React.MouseEvent | React.TouchEvent): number => {
+    const calendarElement = document.getElementById("calendar")!;
     const rect = calendarElement.getBoundingClientRect();
-    const y = e.clientY - rect.top;
 
+    if ("touches" in e && e.touches.length > 0) {
+      return e.touches[0].clientY - rect.top;
+    } else if ("clientY" in e) {
+      return e.clientY - rect.top;
+    }
+
+    return 0;
+  };
+
+  // Function to handle mouse down (start dragging)
+  const handleMouseDown = (e: React.MouseEvent | React.TouchEvent) => {
+    console.log("mouse down");
+    // const calendarElement = document.getElementById("calendar");
+    // if (!calendarElement) return;
+
+    // const rect = calendarElement.getBoundingClientRect();
+    const y = getYPosition(e);
     const index = Math.floor(y / slotHeight);
 
     setStartIndex(index);
@@ -65,15 +77,16 @@ export function Calendar() {
   };
 
   // handle mouse move
-  const handleMouseMove = (e: MouseEvent) => {
+  const handleMouseMove = (e: MouseEvent | TouchEvent) => {
     const calendarElement = document.getElementById("calendar");
     if (!calendarElement) return;
 
-    const rect = calendarElement.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+    // const rect = calendarElement.getBoundingClientRect();
+    const y = getYPosition(e);
+    // const x = e.clientX - rect.left;
+    // const y = e.clientY - rect.top;
 
-    setCursorPosition({ x, y });
+    // setCursorPosition({ x, y });
 
     const index = Math.floor(y / slotHeight);
 
@@ -102,20 +115,27 @@ export function Calendar() {
     setDragging(false); // Stop dragging on mouse up
   };
 
-  // Add event listeners for mousemove and mouseup
   useEffect(() => {
     window.addEventListener("mousemove", handleMouseMove);
     window.addEventListener("mouseup", handleMouseUp);
+    window.addEventListener("touchmove", handleMouseMove, { passive: false }); // Use passive: false to prevent default touch scrolling
+    window.addEventListener("touchend", handleMouseUp);
 
-    // Clean up the listeners when dragging ends
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseup", handleMouseUp);
+      window.removeEventListener("touchmove", handleMouseMove);
+      window.removeEventListener("touchend", handleMouseUp);
     };
   }, [dragging]);
 
   return (
-    <div className="relative" id="calendar" onMouseDown={handleMouseDown}>
+    <div
+      className="relative"
+      id="calendar"
+      onMouseDown={handleMouseDown}
+      onTouchStart={handleMouseDown}
+    >
       {/* Snapping cursor */}
       <motion.div
         className="w-full h-[2px] bg-gray-700 absolute z-10"
