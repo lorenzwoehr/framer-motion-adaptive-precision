@@ -153,7 +153,7 @@ export function Calendar() {
       >
         {/* Cursor */}
         <motion.div
-          className="absolute opacity-0 group-hover:opacity-100 group-active:bg-gray-400 w-full h-[4px] rounded bg-gray-200 mt-[-1px] z-30 transition-colors"
+          className="absolute opacity-0 group-hover:opacity-100 group-active:bg-neutral-400 dark:group-active:bg-neutral-500 w-full h-[4px] rounded bg-neutral-200 dark:bg-neutral-700 mt-[-1px] z-30 transition-colors"
           animate={{ top: nearestSlot.top }}
         ></motion.div>
 
@@ -170,13 +170,13 @@ export function Calendar() {
       <div className="flex flex-col items-stretch justify-start flex-nowrap w-[270px] padding-[64px] select-none">
         {timeSlots.map((timeSlot, hourIndex) => (
           <div key={hourIndex} className="relative">
-            <span className="absolute top-[-12px] left-[-40px] text-gray-400 text-sm leading-7 font-normal text-xs select-none">
+            <span className="absolute top-[-12px] left-[-40px] text-neutral-400 dark:text-neutral-500 text-sm leading-7 font-normal text-xs select-none">
               {getLabelFromTimeSlots(hourIndex)}
             </span>
             <div
               data-index={hourIndex * 4}
               data-time={timeSlot.hour}
-              className="relative h-[15px] w-full border-t-2 border-gray-200 select-none z-0"
+              className="relative h-[15px] w-full border-t-2 border-neutral-200 dark:border-neutral-700 select-none z-0"
             ></div>
             {timeSlot.slots.map((slot, index) => (
               <div
