@@ -4,7 +4,6 @@ import { AnimatePresence, MotionConfig, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { getLabelFromTimeSlots, getTimeRangeFromIndexes } from "../utils";
 import { CalendarEvent } from "./calendar-event";
-import useMeasure from "use-measure";
 
 const timeSlots = [
   { hour: "13:00", slots: ["13:15", "13:30", "13:45"] },
