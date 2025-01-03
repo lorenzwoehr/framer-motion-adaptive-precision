@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, MotionConfig, motion } from "framer-motion";
+import { MotionConfig, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { getLabelFromTimeSlots, getTimeRangeFromIndexes } from "../utils";
 import { CalendarEvent } from "./calendar-event";
@@ -22,10 +22,9 @@ export function Calendar() {
   const [eventStyle, setEventStyle] = useState({
     top: 0,
     height: 0,
-    transformY: 0,
+    marginTop: 0,
   });
   const [selectedTime, setSelectedTime] = useState("");
-  const [dragDirection, setDragDirection] = useState("down");
 
   const slotHeight = 15;
 
@@ -58,7 +57,7 @@ export function Calendar() {
       setEventStyle({
         top: index * slotHeight,
         height: 0,
-        transformY: 0,
+        marginTop: 0,
       });
       setNearestSlot({ top: index * slotHeight });
     }
@@ -81,16 +80,16 @@ export function Calendar() {
       if (index < startIndex) {
         // Dragging upwards: set negative marginTop to simulate moving up
         setEventStyle({
-          top: startIndex * slotHeight,
+          top: startIndex * slotHeight + 6,
           height: newHeight,
-          transformY: -newHeight, // Use negative transfrom to simulate upward drag
+          marginTop: -newHeight, // Use negative transfrom to simulate upward drag
         });
       } else {
         // Dragging downwards: reset marginTop to 0 and adjust height
         setEventStyle({
-          top: startIndex * slotHeight,
+          top: startIndex * slotHeight - 4,
           height: newHeight,
-          transformY: 0, // Reset transform
+          marginTop: 0, // Reset transform
         });
       }
 
@@ -100,10 +99,8 @@ export function Calendar() {
 
         // Determine drag direction
         if (index > startIndex) {
-          setDragDirection("down");
           setSelectedTime(getTimeRangeFromIndexes(startIndex, index));
         } else {
-          setDragDirection("up");
           setSelectedTime(getTimeRangeFromIndexes(index, startIndex));
         }
       }
@@ -112,7 +109,7 @@ export function Calendar() {
 
   // Reset event style
   const handleMouseUp = () => {
-    setEventStyle({ top: 0, height: 0, transformY: 0 });
+    setEventStyle({ top: 0, height: 0, marginTop: 0 });
     setDragging(false);
   };
 
@@ -156,7 +153,6 @@ export function Calendar() {
           <CalendarEvent
             eventStyle={eventStyle}
             selectedTime={selectedTime} // Selected time to be printed on event card
-            dragDirection={dragDirection} // Direction of dragging: up / down
             slotsSpanned={Math.abs(startIndex - endIndex)} // Number of slots spanned as a prop
           />
         )}

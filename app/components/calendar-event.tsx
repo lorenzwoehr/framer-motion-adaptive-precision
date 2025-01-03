@@ -5,17 +5,15 @@ interface CalendarEventProps {
   eventStyle: {
     top: number;
     height: number;
-    transformY: number;
+    marginTop: number;
   };
   selectedTime: string;
-  dragDirection: string;
   slotsSpanned: number;
 }
 
 export const CalendarEvent: React.FC<CalendarEventProps> = ({
   eventStyle,
   selectedTime,
-  dragDirection,
   slotsSpanned,
 }) => {
   // Dynamically adjust font size and padding based on the number of slots spanned
@@ -29,9 +27,7 @@ export const CalendarEvent: React.FC<CalendarEventProps> = ({
 
   return (
     <motion.div
-      className={`absolute w-full z-10 text-white leading-snug ${fontSize}	${
-        dragDirection === "down" ? "mt-[-4px]" : "mt-[6px]"
-      }`}
+      className="absolute w-full z-10 text-white leading-snug ${fontSize}"
       style={{ top: `${eventStyle.top}px` }}
       initial={{
         opacity: 0,
@@ -42,7 +38,7 @@ export const CalendarEvent: React.FC<CalendarEventProps> = ({
         opacity: 1,
         top: `${eventStyle.top}px`,
         height: `${eventStyle.height}px`,
-        transform: `translateY(${eventStyle.transformY}px)`, // Apply transformY to translateY
+        marginTop: `${eventStyle.marginTop}px`,
       }}
       exit={{ opacity: 0 }}
     >
