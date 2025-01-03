@@ -20,9 +20,6 @@ dependencies:
   react-dom:
     specifier: ^18
     version: 18.2.0(react@18.2.0)
-  use-measure:
-    specifier: ^0.3.0
-    version: 0.3.0(react@18.2.0)
 
 devDependencies:
   '@types/node':
@@ -2331,10 +2328,6 @@ packages:
       set-function-name: 2.0.2
     dev: true
 
-  /resize-observer-polyfill@1.5.1:
-    resolution: {integrity: sha512-LwZrotdHOo12nQuZlHEmtuXdqGoOD0OhaxopaNFxWzInpEgaLWoVuAMbTzixuosCx2nEG58ngzW3vxdWoxIgdg==}
-    dev: false
-
   /resolve-from@4.0.0:
     resolution: {integrity: sha512-pb/MYmXstAkysRFx8piNI1tGFNQIFA3vkE3Gq4EuA1dF6gHp/+vgZqsCGJapvy8N3Q+4o7FwvquPJcnZ7RYy4g==}
     engines: {node: '>=4'}
@@ -2777,15 +2770,6 @@ packages:
     dependencies:
       punycode: 2.3.1
     dev: true
-
-  /use-measure@0.3.0(react@18.2.0):
-    resolution: {integrity: sha512-HohD5JGamEaNVN6dUM+pfVBUCblIVk8poTZgTTNTA+hd0TXHMazfBQS8SSb+L4ejlIg+CD3yzkPZDL4Y5A1LlA==}
-    peerDependencies:
-      react: ^16.8.0
-    dependencies:
-      react: 18.2.0
-      resize-observer-polyfill: 1.5.1
-    dev: false
 
   /util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
