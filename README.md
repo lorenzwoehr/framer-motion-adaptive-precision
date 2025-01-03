@@ -2,11 +2,14 @@
 
 **Demo:** [https://framer-motion-adaptive-precision.vercel.app/](https://framer-motion-adaptive-precision.vercel.app/)
 
-This project is a **recreation** of Rauno Freiberg's awesome ["Adaptive Precision" prototype](https://rauno.me/craft/adaptive-precision). It caught my eye, and I thought it would be a fun challenge after taking Emil Kowalski's [Animations on the web course](https://animations.dev/). Huge thanks to Emil for the great course!
+This project is a **recreation** of Rauno Freiberg's amazing ["Adaptive Precision" prototype](https://rauno.me/craft/adaptive-precision). It caught my eye, and I thought it would be a fun challenge after taking Emil Kowalski's [Animations on the web course](https://animations.dev/).
 
-## What's this?
+## Getting started
 
-This is just my spin on Rauno's adaptive precision using [Framer Motion](https://www.framer.com/motion/), pushing what I've learned in the course mentioned above.
+```bash
+pnpm i
+pnpm run dev
+```
 
 ## Links
 
